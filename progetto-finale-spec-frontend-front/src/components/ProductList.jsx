@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-const urlBase = import.meta.env.VITE_API_URL;
+
 import { getProducts } from "../services/productService";
 import { Link, NavLink } from "react-router-dom";
 
@@ -24,11 +24,11 @@ export default function ProductList() {
           setProducts(data);
         }
       } catch (error) {
-        console.error("3. Errore intercettato:", err);
+        console.error("3. Errore intercettato:", error);
         setError(
           "Impossibile caricare i prodotti. Verifica che il backend sia attivo su porta 3001."
         );
-        console.error("Errore nel fetch dei prodotti:", err);
+        console.error("Errore nel fetch dei prodotti:", error);
       } finally {
         // Imposta loading a false, indipendentemente dal successo o fallimento
         console.log("4. Fine fetch.");
