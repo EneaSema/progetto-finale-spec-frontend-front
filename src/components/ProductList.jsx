@@ -1,9 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { getProducts } from "../services/productService";
 import { useProducts } from "../context/ProductContext";
 
 const CATEGORIES = ["Ultrabook", "Gaming", "Business", "2-in-1"];
+
+// FUNZIONE DEBOUNCE: Deve stare fuori dal componente
+const debounce = (callback, delay) => {
+  let timer;
+  return (value) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      callback(value);
+    }, delay);
+  };
+};
 
 // Funzione di utilità per l'Ordinamento (Task 2.3)
 const sortProducts = (list, criteria) => {
@@ -26,10 +39,10 @@ export default function ProductList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Stato immediato per l'input di Ricerca (per fluidità)
-  const [searchTerm, setSearchTerm] = useState("");
+  // Stato immediato: Aggiornato ad ogni battitura (per fluidità dell'input)
+  const [searchInput, setSearchInput] = useState("");
 
-  // Stato che controlla l'API (aggiornato dal debounce o dal filtro categoria)
+  // Stato effettivo: Aggiornato solo dopo il debounce o dal filtro categoria
   const [filters, setFilters] = useState({
     search: "",
     category: "",
@@ -38,26 +51,30 @@ export default function ProductList() {
   // Stato per l'Ordinamento
   const [sortCriteria, setSortCriteria] = useState("title-asc");
 
-  // --- 1. Hook DEBOUNCE per la Ricerca (Task 2.4 - Fluidità) ---
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      // Aggiorna lo stato API solo dopo 500ms di pausa
-      setFilters((prev) => ({ ...prev, search: searchTerm }));
-    }, 1500);
+  // 1. USECALLBACK: Stabilizza la funzione che DEVE aggiornare lo stato di filtro.
+  // L'identità di questa funzione non cambierà, evitando problemi con il debounce.
+  const updateSearchFilter = useCallback(
+    (term) => {
+      // Aggiorna lo stato 'filters.search', che farà ripartire il fetch API
+      setFilters((prev) => ({ ...prev, search: term }));
+    },
+    [setFilters]
+  );
 
-    // Cleanup: Annulla il timer se searchTerm cambia prima che scatti
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchTerm]);
+  // 2. USEMEMO: Crea la funzione debounced una SOLA volta.
+  // Memorizza il risultato di debounce(funzione_stabile, ritardo).
+  const debouncedSearch = useMemo(() => {
+    return debounce(updateSearchFilter, 500); // 500ms di ritardo per la ricerca
+  }, [updateSearchFilter]); // Si ricrea solo se updateSearchFilter cambia (mai)
 
   // --- 2. Hook Principale: FETCH API ---
+  // --- Hook Principale: FETCH API ---
   useEffect(() => {
     const fetchproducts = async () => {
       setLoading(true);
       setError(null);
       try {
-        // La funzione getProducts si occupa di formattare i filtri in query string
+        // La funzione getProducts usa i filtri (che includono la ricerca debounced)
         const data = await getProducts(filters);
         setProducts(data);
       } catch (err) {
@@ -71,7 +88,7 @@ export default function ProductList() {
     };
 
     fetchproducts();
-  }, [filters]); // Si riesegue quando i filtri (ricerca debounced inclusa) o categoria cambiano
+  }, [filters]); // Si riesegue quando i filtri (incluso search) o categoria cambiano
 
   const { isFavorite, toggleFavorite, isComparing, toggleCompare, compareIds } =
     useProducts();
@@ -99,8 +116,14 @@ export default function ProductList() {
             type="text"
             className="form-control"
             placeholder="Cerca per titolo..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            // 🚨 Usa lo stato immediato (searchInput) per l'input controllato
+            value={searchInput}
+            onChange={(e) => {
+              // 1. Aggiorna lo stato visivo immediatamente
+              setSearchInput(e.target.value);
+              // 2. Chiama la funzione debounced, che aspetta 500ms prima di aggiornare i filtri
+              debouncedSearch(e.target.value);
+            }}
           />
         </div>
 
@@ -135,7 +158,7 @@ export default function ProductList() {
             <option value="category-desc">Categoria (Z-A)</option>
           </select>
         </div>
-        {/* Link ai Preferiti (Task 4.1) */}
+        {/* Link ai Preferiti */}
         <div className="col-md-2 text-end">
           <Link to="/compare" className="btn btn-outline-primary">
             Confronta
@@ -143,7 +166,8 @@ export default function ProductList() {
         </div>
       </div>
 
-      {/* Gestione stato vuoto */}
+      {/* Gestione stato vuoto e Mappatura dei prodotti... (il resto del JSX rimane invariato) */}
+
       {displayedProducts.length === 0 && (
         <div className="text-center p-5 alert alert-warning">
           Nessun prodotto trovato.
@@ -155,7 +179,6 @@ export default function ProductList() {
         {displayedProducts.map((product) => (
           <div key={product.id} className="col-md-4 mb-4">
             <div className="card shadow-sm h-100">
-              {/* 🚨 Nota: La card non ha l'immagine/prezzo qui (limitazione backend) */}
               <div className="card-body">
                 <Link
                   to={`/products/${product.id}`}
@@ -167,7 +190,7 @@ export default function ProductList() {
                   Categoria: {product.category}
                 </p>
 
-                {/* 🆕 LOGICA PREFERITI E CONFRONTO */}
+                {/* LOGICA PREFERITI E CONFRONTO */}
                 <div className="mt-auto d-flex justify-content-between align-items-center pt-2">
                   {/* Pulsante 1: Preferiti */}
                   <button
@@ -184,7 +207,7 @@ export default function ProductList() {
                     {isFavorite(product.id) ? "❤️" : "🤍"}
                   </button>
 
-                  {/* Pulsante 2: Aggiungi al Confronto (NUOVO) */}
+                  {/* Pulsante 2: Aggiungi al Confronto */}
                   <button
                     className={`btn btn-sm btn-${
                       isComparing(product.id) ? "primary" : "outline-primary"
@@ -204,7 +227,7 @@ export default function ProductList() {
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center mt-3">
-                  {/* Link al Dettaglio: Lo mettiamo piccolo in fondo alla card */}
+                  {/* Link al Dettaglio */}
                   <Link
                     to={`/products/${product.id}`}
                     className="btn btn-sm btn-link text-secondary"
