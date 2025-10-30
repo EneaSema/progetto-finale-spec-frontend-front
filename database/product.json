@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "title": "Dell XPS 13 Plus",
+    "category": "Ultrabook",
+    "price": 1499,
+    "imageUrl": "https://picsum.photos/id/23/300/200",
+    "details": "Design moderno, sottile e potente, ideale per la produttività.",
+    "isFavorite": false
+  },
+  {
+    "id": 2,
+    "title": "Asus ROG Zephyrus G14",
+    "category": "Gaming",
+    "price": 1999,
+    "imageUrl": "https://picsum.photos/id/24/300/200",
+    "details": "Performance eccezionali in un telaio compatto per il gaming in movimento.",
+    "isFavorite": false
+  },
+  {
+    "id": 3,
+    "title": "HP Spectre x360",
+    "category": "2-in-1",
+    "price": 1199,
+    "imageUrl": "https://picsum.photos/id/25/300/200",
+    "details": "Versatile, si trasforma in tablet. Schermo OLED fantastico.",
+    "isFavorite": false
+  },
+  {
+    "id": 4,
+    "title": "Lenovo ThinkPad X1 Carbon",
+    "category": "Business",
+    "price": 1650,
+    "imageUrl": "https://picsum.photos/id/26/300/200",
+    "details": "Durabilità e sicurezza di livello aziendale, eccellente tastiera.",
+    "isFavorite": false
+  },
+  {
+    "id": 5,
+    "title": "Acer Predator Helios",
+    "category": "Gaming",
+    "price": 2499,
+    "imageUrl": "https://picsum.photos/id/27/300/200",
+    "details": "Raffreddamento avanzato e GPU di punta per le massime prestazioni di gioco.",
+    "isFavorite": false
+  },
+  {
+    "id": 6,
+    "title": "Microsoft Surface Laptop 5",
+    "category": "Ultrabook",
+    "price": 1099,
+    "imageUrl": "https://picsum.photos/id/28/300/200",
+    "details": "Display PixelSense, perfetto equilibrio tra stile e funzionalità.",
+    "isFavorite": false
+  },
+  {
+    "id": 7,
+    "title": "MacBook Air M2",
+    "category": "Ultrabook",
+    "price": 1299,
+    "imageUrl": "https://picsum.photos/id/29/300/200",
+    "details": "Chip M2 per efficienza energetica e performance elevate.",
+    "isFavorite": false
+  },
+  {
+    "id": 8,
+    "title": "HP Envy x360",
+    "category": "2-in-1",
+    "price": 899,
+    "imageUrl": "https://picsum.photos/id/30/300/200",
+    "details": "Opzione 2-in-1 più economica e versatile per l'uso quotidiano.",
+    "isFavorite": false
+  },
+  {
+    "id": 9,
+    "title": "Dell Latitude 5430",
+    "category": "Business",
+    "price": 1350,
+    "imageUrl": "https://picsum.photos/id/31/300/200",
+    "details": "Costruito per l'ambiente di lavoro, affidabile e sicuro.",
+    "isFavorite": false
+  },
+  {
+    "id": 10,
+    "title": "Razer Blade 15",
+    "category": "Gaming",
+    "price": 2199,
+    "imageUrl": "https://picsum.photos/id/32/300/200",
+    "details": "Design elegante, simile a un Ultrabook, ma con potenza da gaming.",
+    "isFavorite": false
+  }
+]
