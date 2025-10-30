@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { getProducts } from "../services/productService";
 import { useProducts } from "../context/ProductContext";
@@ -18,7 +18,7 @@ const debounce = (callback, delay) => {
   };
 };
 
-// Funzione di utilità per l'Ordinamento (Task 2.3)
+// Funzione di utilità per l'Ordinamento
 const sortProducts = (list, criteria) => {
   const sorted = [...list];
   const [field, direction] = criteria.split("-");
@@ -70,7 +70,7 @@ export default function ProductList() {
   // --- 2. Hook Principale: FETCH API ---
   // --- Hook Principale: FETCH API ---
   useEffect(() => {
-    const fetchproducts = async () => {
+    const fetchProducts = async () => {
       setLoading(true);
       setError(null);
       try {
@@ -87,7 +87,7 @@ export default function ProductList() {
       }
     };
 
-    fetchproducts();
+    fetchProducts();
   }, [filters]); // Si riesegue quando i filtri (incluso search) o categoria cambiano
 
   const { isFavorite, toggleFavorite, isComparing, toggleCompare, compareIds } =
@@ -101,7 +101,7 @@ export default function ProductList() {
     return <div className="alert alert-danger p-5">Errore: {error}</div>;
   }
 
-  // Applica l'ordinamento ai prodotti visualizzati (lato frontend)
+  // Applico l'ordinamento ai prodotti visualizzati (lato frontend)
   const displayedProducts = sortProducts(products, sortCriteria);
 
   return (
@@ -116,7 +116,7 @@ export default function ProductList() {
             type="text"
             className="form-control"
             placeholder="Cerca per titolo..."
-            // 🚨 Usa lo stato immediato (searchInput) per l'input controllato
+            // Usa lo stato immediato (searchInput) per l'input controllato
             value={searchInput}
             onChange={(e) => {
               // 1. Aggiorna lo stato visivo immediatamente

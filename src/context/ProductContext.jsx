@@ -41,7 +41,7 @@ export const ProductProvider = ({ children }) => {
       if (prevIds.includes(id)) {
         return prevIds.filter((compareId) => compareId !== id); // Rimuovi
       }
-      // Limite la lista a 3 prodotti (scelta di design comune)
+      // Lista limitata a 3 prodotti
       if (prevIds.length >= 3) {
         return prevIds; // Non aggiungere se la lista è piena
       }

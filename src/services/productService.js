@@ -36,8 +36,7 @@ export async function getProductById(id) {
 
     const data = await response.json();
 
-    // 🚨 QUESTA RIGA È LA VERA SOLUZIONE:
-    // Restituisce SOLO il contenuto di 'product'
+    // QUESTA RIGA:  Restituisce SOLO il contenuto di 'product'
     return data.product;
   } catch (error) {
     console.error(`Errore nel recupero del prodotto ${id}:`, error);
